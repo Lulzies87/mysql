@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styles from "./StudentsPage.module.scss";
+import { SearchBar } from "./SearchBar";
 
-type Student = {
+export type Student = {
   id: string;
   firstName: string;
   lastName: string;
@@ -30,16 +31,28 @@ export default function StudentsPage() {
     fetchData();
   }, []);
 
+  const handleSearch = (searchResults: Student[]) => {
+    setStudents(searchResults);
+  };
+
   return (
-    <ul className={styles.studentList}>
-      {students.map((student) => (
-        <li className={styles.studentList__Item} key={student.id}>
-          <span>
-            Name: {student.firstName} {student.lastName}
-          </span>
-          <span>email: {student.email}</span>
-        </li>
-      ))}
-    </ul>
+    <>
+      <SearchBar setStudents={handleSearch} />
+      <ul className={styles.studentList}>
+        {students.map((student) => (
+          <li className={styles.studentList__Item} key={student.id}>
+            <span>
+              Name: {student.firstName} {student.lastName}
+            </span>
+            <span>email: {student.email}</span>
+          </li>
+        ))}
+      </ul>
+      <NavigationLine />
+    </>
   );
+}
+
+function NavigationLine() {
+  return <p>NavigationLine Here</p>;
 }
