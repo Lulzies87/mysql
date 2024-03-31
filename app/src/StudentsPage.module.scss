@@ -1,0 +1,9 @@
+.studentList {
+    list-style: none;
+    padding: 0;
+
+    &__Item {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
