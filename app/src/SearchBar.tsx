@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import styles from "./SearchBar.module.scss"
 
 type Props = {
   setSearchInput(searchInput: string): void;
@@ -10,9 +11,6 @@ export function SearchBar({ setSearchInput }: Props) {
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // const formData = new FormData(e.currentTarget);
-    // const searchInput = formData.get("input")!.toString();
-
     setSearchInput(inputValue);
     setInputValue("");
   };
@@ -22,7 +20,7 @@ export function SearchBar({ setSearchInput }: Props) {
   };
 
   return (
-    <form onSubmit={handleSearch}>
+    <form className={styles.searchBarContainer} onSubmit={handleSearch}>
       <label htmlFor="input">Search by first/last name and/or email:</label>
       <input
         type="text"

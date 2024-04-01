@@ -29,14 +29,12 @@ export async function loader(searchInput: string, page: number) {
 export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     async function fetchData() {
       const data = await loader(searchInput, page);
       setStudents(data);
-      setTotalPages(Math.ceil(data.length / 2));
     }
     fetchData();
   }, [searchInput, page]);
@@ -45,7 +43,6 @@ export default function StudentsPage() {
     setSearchInput(input);
     const data = await loader(searchInput, page);
     setStudents(data);
-    setTotalPages(Math.ceil(data.length / 2));
   };
 
   const nextPage = () => {
@@ -77,7 +74,6 @@ export default function StudentsPage() {
       </ul>
       <NavigationLine
         page={page}
-        totalPages={totalPages}
         handleNext={nextPage}
         handlePrevious={previousPage}
       />
