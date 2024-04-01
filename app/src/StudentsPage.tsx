@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import styles from "./StudentsPage.module.scss";
 import { SearchBar } from "./SearchBar";
+import { NavigationLine } from "./NavigationLine";
+import styles from "./StudentsPage.module.scss";
 
 export type Student = {
   id: string;
@@ -10,9 +11,14 @@ export type Student = {
   email: string;
 };
 
-export async function loader() {
+export async function loader(searchInput: string, page: number) {
   try {
-    const res = await axios.get<Student[]>("http://localhost:3000/students");
+    const query = searchInput
+      ? `/?search=${searchInput}&page=${page}`
+      : `/?page=${page}`;
+    const res = await axios.get<Student[]>(
+      `http://localhost:3000/students${query}`
+    );
     return res.data;
   } catch (err) {
     console.error("Error fetching students:", err);
@@ -22,22 +28,43 @@ export async function loader() {
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     async function fetchData() {
-      const data = await loader();
+      const data = await loader(searchInput, page);
       setStudents(data);
+      setTotalPages(Math.ceil(data.length / 2));
     }
     fetchData();
-  }, []);
+  }, [searchInput, page]);
 
-  const handleSearch = (searchResults: Student[]) => {
-    setStudents(searchResults);
+  const handleSearchInput = async (input: string) => {
+    setSearchInput(input);
+    const data = await loader(searchInput, page);
+    setStudents(data);
+    setTotalPages(Math.ceil(data.length / 2));
+  };
+
+  const nextPage = () => {
+    if (students.length < 2) {
+      return;
+    }
+    setPage(page + 1);
+  };
+
+  const previousPage = () => {
+    if (page === 1) {
+      return;
+    }
+    setPage(page - 1);
   };
 
   return (
     <>
-      <SearchBar setStudents={handleSearch} />
+      <SearchBar setSearchInput={handleSearchInput} />
       <ul className={styles.studentList}>
         {students.map((student) => (
           <li className={styles.studentList__Item} key={student.id}>
@@ -48,11 +75,12 @@ export default function StudentsPage() {
           </li>
         ))}
       </ul>
-      <NavigationLine />
+      <NavigationLine
+        page={page}
+        totalPages={totalPages}
+        handleNext={nextPage}
+        handlePrevious={previousPage}
+      />
     </>
   );
-}
-
-function NavigationLine() {
-  return <p>NavigationLine Here</p>;
 }

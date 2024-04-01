@@ -1,29 +1,20 @@
-import axios from "axios";
-import { Student } from "./StudentsPage";
 import { FormEvent, useState } from "react";
 
 type Props = {
-  setStudents(data: Student[]): void;
+  setSearchInput(searchInput: string): void;
 };
 
-export function SearchBar({ setStudents }: Props) {
+export function SearchBar({ setSearchInput }: Props) {
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const searchInput = formData.get("input");
+    // const formData = new FormData(e.currentTarget);
+    // const searchInput = formData.get("input")!.toString();
 
-    try {
-      const res = await axios.get<Student[]>(
-        `http://localhost:3000/students/?search=${searchInput}`
-      );
-      setStudents(res.data);
-    } catch (err) {
-      console.error("Error fetching students:", err);
-      return [];
-    }
+    setSearchInput(inputValue);
+    setInputValue("");
   };
 
   const handleInputChange = (e: any) => {

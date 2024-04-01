@@ -19,6 +19,7 @@ app.get("/students", async (req, res) => {
         const offset = isNaN(requestedPage) || !Number.isInteger(requestedPage) ?
             0 :
             (requestedPage - 1) * studentsPageSize;
+
         const [students] = await dbConnection.execute(
             `SELECT id, firstName, lastName, email
             FROM students
